@@ -4,11 +4,15 @@
 
     <ul>
 
-        <li v-for="i in todo">{{i.desc}}</li>
+        <li v-for="i in todo" :key="i.ID_Pekerjaan">{{i.Nama}}
+          
+        <button @click="Hapus(i.ID_Pekerjaan)">Hapus</button>
+        
+        </li>
 
     </ul>
 
-    <input v-model="Teks"/>
+    <input v-model="Teks" name="Nama"/>
     <br>
     <br>
     <button @click="tambah">Simpan Data</button>
@@ -25,9 +29,7 @@
 
       return {
         todo: [
-          // {desc : 'Argus'},
-          // {desc : 'Alucard'},
-          // {desc : 'Bane'}
+          
         ],
 
         Teks : ''
@@ -38,7 +40,7 @@
 
     created: function(){
 
-      axios.get('http://localhost:3000/Input')
+      axios.get('http://localhost:3000/todo')
         .then((result) => {
           this.todo = result.data
         })
@@ -47,8 +49,18 @@
 
     methods:{
       tambah: function(){
-        this.todo.push({desc : this.Teks })
+        const Item_Baru = {Nama:this.Teks}
+        axios.post('http://localhost:3000/todo', Item_Baru)
+        this.todo.push(Item_Baru)
+        this.Teks = ""
+        location.reload()
+      },
+
+      Hapus: function(id){
+        axios.delete(`http://localhost:3000/todo/${id}`)
+        location.reload()
       }
+
     }
 
   }
